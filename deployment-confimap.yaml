@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-template
+  name: webserver-com-cm
+  namespace: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-template
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx-template
+    spec:
+      containers:
+      - image: nginx:latest
+        name: nginx
+        resources: {}
+        volumeMounts: # definição do volume que vamos montar dentro do POD
+        - name: config-volume  #Nome do volume criado, é o campo name dentro do volumes
+          mountPath: /usr/share/nginx/html #onde vamos montar o arquivo 
+        - name: config-volume-variavel
+          mountPath: /tmp 
+
+      volumes:   #como é uma lista pode ter varios trens
+      - name: config-volume  #nome do volume qu to criando
+        configMap: #referencia que o volume vai ser com base em um configmap 
+          name: indexsite #ele sempre precisa já estar criado 
+      - name: config-volume-variavel 
+        configMap:
+          name: variaveis
+
+
